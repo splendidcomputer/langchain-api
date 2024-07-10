@@ -1,6 +1,5 @@
-Here's the improved `README.md` with instructions for installing Node.js added:
 
----
+
 
 # George JS-CHAT-API
 
@@ -87,10 +86,3 @@ node server.js
 curl -X POST http://localhost:3000/api/chat -H "Content-Type: application/json" -d '{"input": "What does Pascal Helbig do in Progwise?"}'
 ```
 
-### License
-
-State the project's license (e.g., MIT, Apache 2.0) and provide a link to the full license text.
-
----
-
-Feel free to customize the above template to fit the specifics of your project.
