@@ -19,7 +19,7 @@ To install Node.js and npm, follow these steps:
 
 #### For Windows and macOS:
 
-1. Download the Node.js installer from [nodejs.org](https://nodejs.org/).
+1. Download the Node.js installer from [nodejs.org](https://nodejs.org/en).
 2. Run the installer and follow the prompts.
 3. Verify the installation by running the following commands in your terminal:
 
@@ -69,9 +69,8 @@ npm install
 Create a `.env` file in the root directory of the project and add the necessary environment variables. For example:
 
 ```plaintext
-PORT=3000
-DATABASE_URL=mongodb://localhost:27017/yourdbname
-API_KEY=yourapikey
+OPENAI_API_KEY=sk-????????
+TAVILY_API_KEY=tvly-???????
 ```
 
 ### 4. Run the Server
@@ -87,46 +86,6 @@ node server.js
 ```bash
 curl -X POST http://localhost:3000/api/chat -H "Content-Type: application/json" -d '{"input": "What does Pascal Helbig do in Progwise?"}'
 ```
-
-## Additional Information
-
-### Project Structure
-
-Provide a brief explanation of the project structure, highlighting important files and directories.
-
-```plaintext
-your-repo/
-├── src/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   └── ...
-├── .env.example
-├── server.js
-└── README.md
-```
-
-### Available Scripts
-
-List other useful npm scripts that are available for testing, building, or other purposes.
-
-```json
-"scripts": {
-  "start": "node server.js",
-  "dev": "nodemon server.js",
-  "test": "jest"
-}
-```
-
-### Contributing
-
-Provide guidelines for contributing to the project.
-
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature-branch`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature-branch`)
-5. Create a new Pull Request
 
 ### License
 
