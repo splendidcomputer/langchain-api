@@ -1,8 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import readline from "readline";
-
 import { ChatOpenAI } from "@langchain/openai";
 import {
   ChatPromptTemplate,
@@ -66,7 +64,7 @@ const searchTool = new TavilySearchResults();
 const retrieverTool = createRetrieverTool(retriever, {
   name: "lcel_search",
   description:
-    "Use this tool when searching for information about Lanchain Expression Language (LCEL)",
+    "Use this tool when searching for information about provided URLs.",
 });
 
 const tools = [searchTool, retrieverTool];
@@ -86,6 +84,7 @@ const agentExecutor = new AgentExecutor({
 const chat_history = [];
 
 export async function handleUserInput(input) {
+  // agent.
   const response = await agentExecutor.invoke({
     input: input,
     chat_history: chat_history,
