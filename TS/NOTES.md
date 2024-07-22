@@ -1,31 +1,47 @@
-## To intall the typescript compiler use this command:
+## Undrstanding The TypeScript Compiler
+
+To install the TypeScript compiler, use the following command:
 
 ```bash
-sudo npm i -g typescript
+sudo npm install -g typescript
 ```
 
-to get the version of the installed typescript complier use this command:
+To check the version of the installed TypeScript compiler, use this command:
 
 ```bash
 tsc -v
 ```
 
-## First example in TypeScript
+## First Example in TypeScript
+
+Create a TypeScript file (`index.ts`) with the following content:
 
 ```typescript
 console.log("Hello World");
 ```
 
-Then go to the bash terminal and run
+Then, compile the TypeScript file using the following command in the terminal:
 
 ```bash
 tsc index.ts
 ```
 
-## Configuring the TypeScript compiler
+## Configuring the TypeScript Compiler
 
-To iniate the typescript compiler execute the following bash command in your terminal:
+To initialize the TypeScript compiler, execute the following command in your terminal:
 
 ```bash
 tsc --init
 ```
+
+This will create a `tsconfig.json` file. In this file, make the following modifications:
+
+1. Under the `/* Language and Environment */` section, ensure that
+   1. `"target": "ES2016"`.
+2. Under the `/* Modules */` section, ensure that
+   1. `"rootDir": "./src"`.
+3. Under the `/* Emit */` section, ensure that
+   1. `"outDir": "./dist"`.
+   2. If also uncomment `"removeComments": true` then the TS compliter will not transfer the comments that we had is our TS code into to the generated JS code.
+   3. Another useful setting is `"noEmitOnError": true ` which disables emitting files if any type checking errors are reported.
+4.
