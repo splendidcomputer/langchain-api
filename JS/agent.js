@@ -64,9 +64,9 @@ const prompt = ChatPromptTemplate.fromMessages([
 // Tools
 const searchTool = new TavilySearchResults();
 const retrieverTool = createRetrieverTool(retriever, {
-  name: "lcel_search",
+  name: "general_search",
   description:
-    "Use this tool when searching for information about Lanchain Expression Language (LCEL)",
+    "Use this tool when searching for general information across various topics.",
 });
 
 const tools = [searchTool, retrieverTool];
