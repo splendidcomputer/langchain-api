@@ -7,12 +7,9 @@ import { ChatOpenAI } from "@langchain/openai";
 import {
   ChatPromptTemplate,
   MessagesPlaceholder,
-} from "@langchain/core/prompts"; // Updated import paths
-import { HumanMessage, AIMessage } from "@langchain/core/messages"; // Updated import paths
+} from "@langchain/core/prompts";
+import { HumanMessage, AIMessage } from "@langchain/core/messages";
 import { createOpenAIFunctionsAgent, AgentExecutor } from "langchain/agents";
-// import { TavilySearchAPIRetriever } from "@langchain/community/retrievers/tavily_search_api";
-// import { TavilySearchResults } from "@langchain/tools";
-// import { createRetrieverTool } from "langchain/tools";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { OpenAIEmbeddings } from "@langchain/openai";
@@ -21,7 +18,6 @@ import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { DocxLoader } from "@langchain/community/document_loaders/fs/docx";
 import { RunnableMap, RunnablePassthrough } from "@langchain/core/runnables";
-// import { Document } from "@langchain/document";
 
 // Load documents from local directory
 const localLoader = new DirectoryLoader("docs", {
@@ -42,7 +38,13 @@ const splitDocs = await splitter.splitDocuments(localDocs);
 // Generate embeddings for the split documents
 const embeddings = new OpenAIEmbeddings();
 const vectorStore = await MemoryVectorStore.fromDocuments(
-  splitDocs,
+  splitDocs.map((doc) => ({
+    ...doc,
+    pageContent:
+      typeof doc.pageContent === "string"
+        ? doc.pageContent
+        : JSON.stringify(doc.pageContent),
+  })),
   embeddings
 );
 
@@ -78,26 +80,29 @@ const formatDocsWithId = (docs) => {
   return (
     "\n\n" +
     docs
-      .map(
-        (doc, idx) =>
-          `Source ID: ${idx}\nArticle title: ${
-            doc.metadata.title || "No Title"
-          }\nArticle Snippet: ${doc.pageContent.slice(0, 200)}...`
-      )
+      .map((doc, idx) => {
+        // Ensure content is a string
+        const content =
+          typeof doc.pageContent === "string"
+            ? doc.pageContent
+            : JSON.stringify(doc.pageContent);
+        return `Source ID: ${idx}\nArticle title: ${
+          doc.metadata.title || "No Title"
+        }\nArticle Snippet: ${content.slice(0, 200)}...`;
+      })
       .join("\n\n")
   );
 };
 
-// Subchain for generating an answer once we've done retrieval
 const prompt = ChatPromptTemplate.fromMessages([
   ("system", "You are a helpful assistant."),
   new MessagesPlaceholder("chat_history"),
   ("human", "{input}"),
   new MessagesPlaceholder("agent_scratchpad"),
 ]);
+
 const answerChain = prompt.pipe(llmWithCitedOutput);
 
-// Create a runnable map for the retriever and the formatted documents
 const map = RunnableMap.from({
   question: new RunnablePassthrough(),
   docs: retriever,
@@ -107,13 +112,20 @@ const map = RunnableMap.from({
 const chain = map
   .assign({
     context: (input) => formatDocsWithId(input.docs),
+    chat_history: () => [], // Providing an empty chat history to start
   })
   .assign({ cited_answer: answerChain })
   .pick(["cited_answer", "docs"]);
 
 // Function to run the chain and handle user questions
 async function askQuestion(question) {
-  const result = await chain.invoke(question);
+  // Ensure the question is treated as a string
+  question = String(question);
+
+  const result = await chain.invoke({
+    question,
+    chat_history: [], // Pass an empty array for the chat history initially
+  });
   console.log("Answer: ", result.cited_answer.answer);
   console.log("Citations: ", result.cited_answer.citations);
   console.log("Referenced Documents: ");
