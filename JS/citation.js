@@ -90,9 +90,9 @@ const formatDocsWithId = (docs) => {
 
 // Subchain for generating an answer once we've done retrieval
 const prompt = ChatPromptTemplate.fromMessages([
-  { role: "system", content: "You are a helpful assistant." },
+  ("system", "You are a helpful assistant."),
   new MessagesPlaceholder("chat_history"),
-  { role: "user", content: "{input}" },
+  ("human", "{input}"),
   new MessagesPlaceholder("agent_scratchpad"),
 ]);
 const answerChain = prompt.pipe(llmWithCitedOutput);
